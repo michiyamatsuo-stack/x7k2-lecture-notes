@@ -163,8 +163,12 @@ main {
 
 .work-body {
   font-size: 1rem;
-  white-space: pre-wrap;
+  line-height: 1.5;
   margin-bottom: 32px;
+}
+
+p.work-body {
+  white-space: pre-wrap;
 }
 
 .work-body p {
@@ -172,7 +176,7 @@ main {
 }
 
 .work-body figure.inline-photo {
-  margin: 0 0 28px;
+  margin: 1.5em 0 28px;
 }
 
 .work-body figure.inline-photo img {
