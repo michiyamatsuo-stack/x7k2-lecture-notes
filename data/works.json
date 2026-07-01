@@ -1,0 +1,26 @@
+[
+  {
+    "id": "work01",
+    "title": "商店街の灯を消さない ― 世代を超えた再生の記録",
+    "student": "山田 花子",
+    "thumbnail": "https://placehold.co/600x400/1e3a5f/ffffff?text=Article",
+    "type": "article",
+    "page": "works/work01.html"
+  },
+  {
+    "id": "work02",
+    "title": "キャンパスの一日 ― 密着ドキュメンタリー",
+    "student": "佐藤 太郎",
+    "thumbnail": "https://placehold.co/600x400/1e3a5f/ffffff?text=Video",
+    "type": "video",
+    "page": "works/work02.html"
+  },
+  {
+    "id": "work03",
+    "title": "地域防災の最前線を歩く",
+    "student": "鈴木 次郎",
+    "thumbnail": "https://placehold.co/600x400/1e3a5f/ffffff?text=Article",
+    "type": "article",
+    "page": "works/work03.html"
+  }
+]
