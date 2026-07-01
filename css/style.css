@@ -167,6 +167,29 @@ main {
   margin-bottom: 32px;
 }
 
+.work-body p {
+  margin: 0 0 1.4em;
+}
+
+.work-body figure.inline-photo {
+  margin: 0 0 28px;
+}
+
+.work-body figure.inline-photo img {
+  display: block;
+  width: 100%;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  object-fit: cover;
+}
+
+.work-body figure.inline-photo figcaption {
+  margin-top: 8px;
+  font-size: 0.85rem;
+  color: var(--color-text-light);
+  text-align: center;
+}
+
 .work-gallery {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
