@@ -4,24 +4,35 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
-  <!-- ページタイトルを作品タイトルに差し替えてください -->
-  <title>【作品タイトル】｜ジャーナリズム実習基礎 学生作品アーカイブ</title>
-  <link rel="stylesheet" href="../css/style.css?v=2">
+  <!-- ▼ページタイトルを作品タイトルに差し替えてください -->
+  <title>【作品タイトル】｜ジャーナリズム実習 学生作品アーカイブ</title>
+  <link rel="stylesheet" href="../css/style.css?v=3">
 </head>
 <body>
   <main class="work-page">
+
+    <!-- ============================================================
+         (1) 著者欄　＝　班名
+         共同制作なので、個人名ではなく「班名」を入れます。
+         ============================================================ -->
     <div class="work-profile">
-      <!-- 学生の顔写真に差し替えてください（正方形推奨） -->
-      <img class="work-profile__photo" src="https://placehold.co/200x200/eaf3fb/1e3a5f?text=Photo" alt="学生名の顔写真">
+      <img class="work-profile__photo" src="https://placehold.co/200x200/eaf3fb/1e3a5f?text=Group" alt="【班名】の写真">
       <div>
-        <div class="work-profile__name">学生名</div>
-        <div class="work-profile__role">動画作品</div>
+        <div class="work-profile__name">【班名】</div>
+        <div class="work-profile__role">動画作品／ジャーナリズム実習 2026年後期</div>
+        <div class="work-profile__members">【班員の氏名を「、」で区切って全員分】</div>
       </div>
     </div>
 
-    <h1 class="work-title">【作品タイトル】をここに入力</h1>
+    <h1 class="work-title">【見出し　25〜35字】</h1>
+    <p class="work-subtitle">【サブ見出し　主見出しを補う一行】</p>
 
-    <!-- YouTubeの「共有」→「埋め込み」で取得したURL部分（/embed/xxxx）に差し替えてください -->
+    <!-- ============================================================
+         (2) 動画
+         松尾の個人アカウントに「限定公開（リンクを知っている人のみ）」で
+         アップロードした動画の埋め込みURLに差し替えます。
+         YouTubeの動画ページで「共有」→「埋め込む」→ src の /embed/xxxx を使う。
+         ============================================================ -->
     <div class="video-frame-wrapper">
       <iframe
         src="https://www.youtube.com/embed/VIDEO_ID"
@@ -31,8 +42,42 @@
       ></iframe>
     </div>
 
-    <!-- 作品の説明文などがあれば入力してください（不要なら削除可） -->
-    <p class="work-body">ここに作品の説明文を入力してください（任意）。</p>
+    <!-- ============================================================
+         (3) リード（100〜150字）
+         動画班も活字班と同じくリードを文字で書きます。
+         ============================================================ -->
+    <p class="work-lead">【リード　100〜150字。この動画がどんな話かをここに書きます。】</p>
+
+    <div class="work-body">
+      <!-- ==========================================================
+           (4) 解説（任意）
+           動画に入りきらなかった背景・用語の説明があれば。
+           不要なら <h2> と <p> ごと削除してください。
+           ========================================================== -->
+      <h2>【解説の小見出し】</h2>
+      <p>　【背景や用語の説明】</p>
+      <p class="part-credit">（文・【氏名】）</p>
+    </div>
+
+    <!-- ============================================================
+         (5) クレジット　班員全員の名前が必ず出るようにする
+         動画のエンドクレジットと同じ内容を、ここにも文字で載せます。
+         ============================================================ -->
+    <div class="work-credit">
+      <p class="work-credit__line"><span>構成</span>【氏名】</p>
+      <p class="work-credit__line"><span>取材</span>【取材に行った人を全員】</p>
+      <p class="work-credit__line"><span>撮影</span>【氏名】</p>
+      <p class="work-credit__line"><span>編集</span>【氏名】</p>
+      <p class="work-credit__line"><span>ナレーション</span>【氏名】</p>
+    </div>
+
+    <details class="work-sources">
+      <summary>取材源・参考資料</summary>
+      <ul>
+        <li>【所属・肩書】【氏名】さん（2026年○月○日、【場所】で取材）</li>
+        <li>【使用した音源・素材の出典】</li>
+      </ul>
+    </details>
 
     <a class="back-link" href="../index.html">← 一覧に戻る</a>
   </main>
