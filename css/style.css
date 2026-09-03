@@ -433,3 +433,33 @@ p.work-body {
     min-width: 0;
   }
 }
+
+/* ---------------------------------------------------------
+   リード写真（本文の前に置くメイン写真）
+   .work-body の外にあるため、上の .work-body 限定の指定が効かず、
+   画像が原寸のまま横にはみ出していた。ここで全体に効く指定を置く。
+   --------------------------------------------------------- */
+figure.inline-photo {
+  margin: 1.5em 0 28px;
+}
+
+figure.inline-photo img {
+  display: block;
+  width: 100%;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  object-fit: cover;
+}
+
+figure.inline-photo figcaption {
+  margin-top: 8px;
+  font-size: 0.85rem;
+  color: var(--color-text-light);
+  text-align: center;
+}
+
+/* 本文より前に置くメイン写真は、画面に収まる高さに抑える
+   （本文中の写真＝.work-body 内には適用されない） */
+.work-page > figure.inline-photo img {
+  max-height: 54vh;
+}
