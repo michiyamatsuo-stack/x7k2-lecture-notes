@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>どこに線を引くか ── みんなの結果</title>
+<style>
+  :root {
+    --ink: #1A1A1A; --muted: #5F5F5F; --paper: #FFFFFF; --card: #F6F5F3;
+    --accent: #B03A2E; --ok: #2F5D50; --rule: #DDDAD5;
+    color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: "Hiragino Sans", "Yu Gothic UI", "Yu Gothic", "Noto Sans JP", system-ui, sans-serif;
+    font-size: clamp(16px, 1.55vw, 30px); line-height: 1.4;
+    padding: .9em 2.4em 1em;
+  }
+  header { display: flex; align-items: flex-end; gap: 1em; flex-wrap: wrap; border-bottom: 2px solid var(--ink); padding-bottom: .5em; }
+  .bar { width: 2.4em; height: .22em; background: var(--accent); margin-bottom: .4em; }
+  h1 { font-size: 1.9em; margin: 0; line-height: 1.2; }
+  .count { margin-left: auto; font-weight: 800; font-size: 1.5em; white-space: nowrap; }
+  .count small { font-size: .55em; font-weight: 600; color: var(--muted); margin-right: .5em; }
+  nav { display: flex; gap: .4em; flex-wrap: wrap; margin: .5em 0 .6em; }
+  nav button {
+    font: inherit; font-size: .7em; font-weight: 700; padding: .45em .9em; border-radius: 999px;
+    border: 1.5px solid var(--ink); background: #fff; color: var(--ink); cursor: pointer;
+  }
+  nav button[aria-pressed="true"] { background: var(--ink); color: #fff; }
+  nav .sp { flex: 1; }
+  nav button.quiet { border-color: var(--rule); color: var(--muted); font-weight: 600; }
+  [hidden] { display: none !important; }
+
+  /* 受付中 */
+  #wait { display: grid; grid-template-columns: 1fr auto; gap: 2em; align-items: center; min-height: 60vh; }
+  #wait .big { font-size: 2.2em; font-weight: 800; line-height: 1.3; margin: 0 0 .4em; }
+  #wait .url { font-size: 1.05em; word-break: break-all; font-weight: 700; }
+  #wait ol { margin: .6em 0 0; padding-left: 1.3em; color: var(--ink); }
+  #wait li { margin: .2em 0; }
+  #qr { width: min(34vw, 46vh); height: min(34vw, 46vh); display: flex; align-items: center; justify-content: center; }
+  #qr svg, #qr img { width: 100%; height: 100%; }
+  #reveal { font: inherit; font-weight: 800; font-size: 1em; margin-top: 1em; padding: .6em 1.4em; border: 0; border-radius: .5em; background: var(--accent); color: #fff; cursor: pointer; }
+
+  /* 集計 */
+  .legend { display: flex; gap: 1.4em; font-size: .8em; font-weight: 700; margin: 0 0 .5em; align-items: center; }
+  .legend i { display: inline-block; width: 1em; height: 1em; border-radius: .2em; margin-right: .35em; vertical-align: -.12em; }
+  .legend .note { margin-left: auto; font-weight: 500; color: var(--muted); }
+  .row { display: grid; grid-template-columns: 1.6em minmax(0, 17em) 1fr; gap: .6em; align-items: center; padding: .2em 0; border-bottom: 1px solid var(--rule); }
+  .row .letter { font-weight: 800; font-size: 1.35em; color: var(--accent); text-align: center; }
+  .row .text { font-weight: 700; font-size: .86em; line-height: 1.3; }
+  .row .text .split { display: inline-block; margin-left: .5em; font-size: .78em; padding: .05em .5em; border: 1.5px solid var(--ink); border-radius: 999px; white-space: nowrap; }
+  .track { display: flex; height: 2.1em; gap: 3px; }
+  .seg { display: flex; align-items: center; color: #fff; font-weight: 800; font-size: .95em; min-width: 0; overflow: hidden; white-space: nowrap; transition: flex-grow .5s ease; }
+  .seg.ok { background: var(--ok); justify-content: flex-start; padding-left: .5em; border-radius: .25em 0 0 .25em; }
+  .seg.ng { background: var(--accent); justify-content: flex-end; padding-right: .5em; border-radius: 0 .25em .25em 0; }
+  .seg.zero { padding: 0; }
+  .lines { margin-top: .6em; display: grid; grid-template-columns: auto 1fr; gap: .8em 1.2em; align-items: end; }
+  .lines h2 { font-size: .9em; margin: 0; align-self: center; line-height: 1.35; }
+  .lines h2 small { display: block; font-weight: 500; color: var(--muted); font-size: .8em; }
+  .hist { display: grid; grid-template-columns: repeat(8, 1fr); gap: .4em; align-items: end; height: 4.6em; }
+  .hist div { display: flex; flex-direction: column; justify-content: flex-end; align-items: center; height: 100%; font-size: .72em; font-weight: 700; }
+  .hist b { display: block; width: 100%; background: var(--ink); border-radius: .2em .2em 0 0; min-height: 2px; transition: height .5s ease; }
+  .hist span { margin-top: .2em; color: var(--muted); white-space: nowrap; }
+  .hist em { font-style: normal; }
+  .empty { color: var(--muted); padding: 2em 0; }
+
+  /* 理由 */
+  #reasons ul { list-style: none; padding: 0; margin: 0; columns: 2; column-gap: 2em; }
+  #reasons li { break-inside: avoid; padding: .35em 0; border-bottom: 1px solid var(--rule); font-size: .86em; }
+  #reasons li b { color: var(--accent); margin-right: .6em; letter-spacing: .05em; white-space: nowrap; }
+  footer { margin-top: .6em; font-size: .62em; color: var(--muted); display: flex; gap: 1em; flex-wrap: wrap; }
+  footer button { font: inherit; border: 1px solid var(--rule); background: #fff; color: var(--muted); border-radius: .4em; padding: .2em .7em; cursor: pointer; }
+  :focus-visible { outline: 3px solid #2B6CB0; outline-offset: 2px; }
+  @media (max-width: 700px) {
+    body { padding: 1em; }
+    #wait { grid-template-columns: 1fr; }
+    .row { grid-template-columns: 1.6em 1fr; }
+    .row .track { grid-column: 1 / -1; }
+    #reasons ul { columns: 1; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div><div class="bar"></div><h1 id="title"></h1></div>
+  <div class="count"><small>回答</small><span id="n">0</span> 人</div>
+</header>
+
+<nav aria-label="表示の切り替え">
+  <button type="button" data-view="wait" aria-pressed="true">受付中（QR）</button>
+  <button type="button" data-view="chart" aria-pressed="false">集計</button>
+  <button type="button" data-view="reasons" aria-pressed="false" id="tabReasons">理由</button>
+  <span class="sp"></span>
+  <button type="button" class="quiet" id="sort" aria-pressed="false">許せる順に並べる</button>
+</nav>
+
+<section id="wait">
+  <div>
+    <p class="big">スマホで開いて、<br>カードを並べ、線を引いてください。</p>
+    <div class="url" id="url"></div>
+    <ol>
+      <li>右のQRコードを読む（LMSの「第11回」にもリンクがあります）</li>
+      <li>許せる順にカードを並べる</li>
+      <li>赤い線を「ここから先はだめ」の位置に動かして、提出</li>
+    </ol>
+    <button type="button" id="reveal">集計を見せる</button>
+  </div>
+  <div id="qr" aria-label="学生用ページのQRコード"></div>
+</section>
+
+<section id="chart" hidden>
+  <div class="legend">
+    <span><i style="background:var(--ok)"></i>許せる（線より上）</span>
+    <span><i style="background:var(--accent)"></i>だめ（線より下）</span>
+    <span class="note" id="splitNote"></span>
+  </div>
+  <div id="rows"></div>
+  <div class="lines">
+    <h2>線を引いた位置<small>「許せる」としたカードの数</small></h2>
+    <div class="hist" id="hist"></div>
+  </div>
+</section>
+
+<section id="reasons" hidden>
+  <ul id="reasonList"></ul>
+</section>
+
+<footer>
+  <span id="state"></span>
+  <span id="demoTools" hidden>
+    <button type="button" id="demoFill">試作用：サンプル80人を入れる</button>
+    <button type="button" id="demoClear">試作用：消す</button>
+  </span>
+</footer>
+
+<script src="config.js"></script>
+<script>
+(function () {
+  "use strict";
+  var CFG = window.LINE_APP;
+  var IDS = CFG.cards.map(function (c) { return c.id; });
+  var N = IDS.length;
+  var rows = [], view = "wait", sortByOk = false;
+  var $ = function (id) { return document.getElementById(id); };
+  $("title").textContent = CFG.title;
+  if (!CFG.askReason) $("tabReasons").hidden = true;
+
+  // 学生用ページのURL（このページと同じ場所の index.html）
+  var studentUrl = location.href.replace(/[^\/]*(\?.*)?(#.*)?$/, "");
+  $("url").textContent = studentUrl.replace(/^https?:\/\//, "");
+
+  // ---- QRコード（外部ライブラリが読めなければ、URLの表示だけになる） ----
+  var s = document.createElement("script");
+  s.src = "https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js";
+  s.onload = function () {
+    try {
+      var q = window.qrcode(0, "M"); q.addData(studentUrl); q.make();
+      $("qr").innerHTML = q.createSvgTag({ cellSize: 8, margin: 2, scalable: true });
+    } catch (e) {}
+  };
+  document.head.appendChild(s);
+
+  // ---- 表示の切り替え ----
+  function setView(v) {
+    view = v;
+    ["wait", "chart", "reasons"].forEach(function (k) { $(k).hidden = k !== v; });
+    Array.prototype.forEach.call(document.querySelectorAll("nav button[data-view]"), function (b) {
+      b.setAttribute("aria-pressed", String(b.dataset.view === v));
+    });
+    $("sort").style.visibility = v === "chart" ? "visible" : "hidden";
+    render();
+  }
+  Array.prototype.forEach.call(document.querySelectorAll("nav button[data-view]"), function (b) {
+    b.addEventListener("click", function () { setView(b.dataset.view); });
+  });
+  $("reveal").addEventListener("click", function () { setView("chart"); });
+  $("sort").addEventListener("click", function () {
+    sortByOk = !sortByOk; $("sort").setAttribute("aria-pressed", String(sortByOk));
+    $("sort").textContent = sortByOk ? "A〜Gの順に戻す" : "許せる順に並べる";
+    render();
+  });
+
+  // ---- 集計 ----
+  function valid(r) {
+    return r && typeof r.o === "string" && r.o.length === N && r.o.split("").sort().join("") === IDS.slice().sort().join("")
+      && Number.isInteger(r.l) && r.l >= 0 && r.l <= N;
+  }
+  function tally() {
+    var t = {}, hist = [];
+    IDS.forEach(function (id) { t[id] = { ok: 0, rank: 0 }; });
+    for (var i = 0; i <= N; i++) hist.push(0);
+    rows.forEach(function (r) {
+      hist[r.l]++;
+      r.o.split("").forEach(function (id, pos) { if (pos < r.l) t[id].ok++; t[id].rank += pos + 1; });
+    });
+    return { t: t, hist: hist };
+  }
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+
+  function render() {
+    var n = rows.length;
+    $("n").textContent = n;
+    if (view === "chart") renderChart(n);
+    if (view === "reasons") renderReasons();
+  }
+  function renderChart(n) {
+    var box = $("rows"), hist = $("hist");
+    if (!n) { box.textContent = ""; box.appendChild(el("p", "empty", "まだ回答がありません。")); hist.textContent = ""; $("splitNote").textContent = ""; return; }
+    var a = tally();
+    var order = CFG.cards.slice();
+    if (sortByOk) order.sort(function (x, y) { return a.t[y.id].ok - a.t[x.id].ok || a.t[x.id].rank - a.t[y.id].rank; });
+    var anySplit = false;
+    box.textContent = "";
+    order.forEach(function (c) {
+      var ok = a.t[c.id].ok, ng = n - ok, pOk = Math.round(ok / n * 100), pNg = 100 - pOk;
+      var split = pOk >= 35 && pOk <= 65;
+      anySplit = anySplit || split;
+      var row = el("div", "row");
+      row.appendChild(el("div", "letter", c.id));
+      var text = el("div", "text", c.text);
+      if (split) text.appendChild(el("span", "split", "意見が割れた"));
+      row.appendChild(text);
+      var track = el("div", "track");
+      track.setAttribute("role", "img");
+      track.setAttribute("aria-label", c.id + "：許せる " + pOk + "％（" + ok + "人）、だめ " + pNg + "％（" + ng + "人）");
+      var sOk = el("div", "seg ok" + (ok ? "" : " zero"), pOk >= 9 ? pOk + "％" : "");
+      var sNg = el("div", "seg ng" + (ng ? "" : " zero"), pNg >= 9 ? pNg + "％" : "");
+      sOk.style.flexGrow = ok; sOk.style.flexBasis = "0"; sNg.style.flexGrow = ng; sNg.style.flexBasis = "0";
+      track.appendChild(sOk); track.appendChild(sNg);
+      row.appendChild(track);
+      box.appendChild(row);
+    });
+    $("splitNote").textContent = anySplit ? "「意見が割れた」＝許せるが35〜65％" : "";
+    var max = Math.max.apply(null, a.hist);
+    hist.textContent = "";
+    a.hist.forEach(function (v, i) {
+      var d = el("div");
+      d.appendChild(el("em", null, v ? v + "人" : ""));
+      var b = el("b"); b.style.height = (max ? v / max * 70 : 0) + "%"; d.appendChild(b);
+      d.appendChild(el("span", null, i === 0 ? "全部だめ" : i === N ? "全部許せる" : i + "枚"));
+      hist.appendChild(d);
+    });
+  }
+  function summary(r) { var a = r.o.split(""); return a.slice(0, r.l).join(" ") + "｜" + a.slice(r.l).join(" "); }
+  function renderReasons() {
+    var ul = $("reasonList"); ul.textContent = "";
+    var withReason = rows.filter(function (r) { return r.r; });
+    if (!withReason.length) { ul.appendChild(el("li", "empty", "理由を書いた回答は、まだありません。")); return; }
+    withReason.slice().reverse().forEach(function (r) {
+      var li = el("li"); li.appendChild(el("b", null, summary(r))); li.appendChild(document.createTextNode(r.r)); ul.appendChild(li);
+    });
+  }
+
+  // ---- データの取得（5秒ごと） ----
+  var demoKey = "lineapp-demo:" + CFG.session;
+  function fetchRows() {
+    if (!CFG.endpoint) {
+      var o; try { o = JSON.parse(localStorage.getItem(demoKey)) || {}; } catch (e) { o = {}; }
+      return Promise.resolve(Object.keys(o).map(function (k) { return o[k]; }));
+    }
+    return fetch(CFG.endpoint + "?session=" + encodeURIComponent(CFG.session) + "&t=" + Date.now())
+      .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      .then(function (j) { if (!j || !j.ok) throw new Error("error"); return j.rows || []; });
+  }
+  function poll() {
+    fetchRows().then(function (list) {
+      rows = list.map(function (r) { return { o: r.o, l: Number(r.l), r: String(r.r || "").slice(0, 80) }; }).filter(valid);
+      var d = new Date();
+      $("state").textContent = (CFG.endpoint ? "" : "試作モード（この端末の中の回答だけを表示）　") + "更新 " + d.toLocaleTimeString("ja-JP");
+      render();
+    }).catch(function () {
+      $("state").textContent = "集計を読み込めませんでした。5秒後にもう一度試します。";
+    }).then(function () { setTimeout(poll, 5000); });
+  }
+
+  // ---- 試作モード用：サンプルを入れる／消す ----
+  if (!CFG.endpoint) {
+    $("demoTools").hidden = false;
+    $("demoFill").addEventListener("click", function () {
+      var o; try { o = JSON.parse(localStorage.getItem(demoKey)) || {}; } catch (e) { o = {}; }
+      var lean = {}; IDS.forEach(function (id, i) { lean[id] = i; });   // A寄りほど「許せる」になりやすい仮のデータ
+      for (var i = 0; i < 80; i++) {
+        var ord = IDS.slice().sort(function (x, y) { return (lean[x] + Math.random() * 5) - (lean[y] + Math.random() * 5); });
+        var line = Math.max(0, Math.min(N, Math.round(3 + (Math.random() + Math.random() - 1) * 3)));
+        o["sample" + i] = { o: ord.join(""), l: line, r: i % 9 === 0 ? "（サンプル）本人が知らないところで使うのはだめ" : "" };
+      }
+      localStorage.setItem(demoKey, JSON.stringify(o)); poll0();
+    });
+    $("demoClear").addEventListener("click", function () { localStorage.removeItem(demoKey); poll0(); });
+  }
+  function poll0() { fetchRows().then(function (list) { rows = list.filter(valid); render(); }); }
+
+  setView("wait");
+  poll();
+})();
+</script>
+</body>
+</html>
