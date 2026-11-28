@@ -149,6 +149,7 @@
 
   // 学生用ページのURL（このページと同じ場所の index.html）
   var studentUrl = location.href.replace(/[^\/]*(\?.*)?(#.*)?$/, "");
+  if (CFG.rehearsal) studentUrl += "?s=" + CFG.rehearsal;   // リハーサル中は、QRコードもリハーサル用にする
   $("url").textContent = studentUrl.replace(/^https?:\/\//, "");
 
   // ---- QRコード（外部ライブラリが読めなければ、URLの表示だけになる） ----
@@ -268,7 +269,7 @@
     fetchRows().then(function (list) {
       rows = list.map(function (r) { return { o: r.o, l: Number(r.l), r: String(r.r || "").slice(0, 80) }; }).filter(valid);
       var d = new Date();
-      $("state").textContent = (CFG.endpoint ? "" : "試作モード（この端末の中の回答だけを表示）　") + "更新 " + d.toLocaleTimeString("ja-JP");
+      $("state").textContent = (CFG.endpoint ? "" : "試作モード（この端末の中の回答だけを表示）　") + (CFG.rehearsal ? "リハーサル（" + CFG.rehearsal + "）　" : "") + "更新 " + d.toLocaleTimeString("ja-JP");
       render();
     }).catch(function () {
       $("state").textContent = "集計を読み込めませんでした。5秒後にもう一度試します。";

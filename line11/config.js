@@ -3,7 +3,7 @@
 window.LINE_APP = {
   // 集計の受け口（Google Apps Script のウェブアプリのURL）。
   // 空のままだと「試作モード」になり、回答はその端末の中だけに保存される。
-  endpoint: "",
+  endpoint: "https://script.google.com/macros/s/AKfycbz3Hq9NUgTwd0HJOve9szctckrunCI-SwboaF56smOe44n3ONUVPJY4BpB9bqAqb6EQxg/exec",
 
   // 回答をまとめる単位。リハーサルと本番で変えると、集計が混ざらない。
   session: "seiji11-20261202",
@@ -26,3 +26,9 @@ window.LINE_APP = {
   // 「理由をひとこと」の欄を出すか（true / false）
   askReason: true
 };
+
+// リハーサル用：URLの末尾に ?s=test のように付けると、その名前の別の回として扱う（本番の回答と混ざらない）。
+(function () {
+  var m = /[?&]s=([A-Za-z0-9_-]{1,30})(&|$)/.exec(location.search);
+  if (m) { window.LINE_APP.session = m[1]; window.LINE_APP.rehearsal = m[1]; }
+})();

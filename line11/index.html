@@ -123,6 +123,7 @@
   document.getElementById("instruction").textContent = CFG.instruction;
   document.getElementById("hint").textContent = CFG.hint;
   if (!CFG.endpoint) document.getElementById("demo").hidden = false;
+  if (CFG.rehearsal) { var dm = document.getElementById("demo"); dm.textContent = "リハーサル用のページです（本番の集計には入りません）。"; dm.hidden = false; }
   if (CFG.askReason) document.getElementById("reasonBox").hidden = false;
 
   // ---- 状態（端末に保存。再読み込みしても並びが残る） ----
